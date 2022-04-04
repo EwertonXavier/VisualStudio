@@ -1,13 +1,11 @@
 ﻿@model W2022_Assignment3_Ewerton.Models.Teacher
+
 @{
-    ViewBag.Title = "Show";
+    ViewBag.Title = "Delete";
 }
 
-@{ 
-    string urlDelete = "/Teacher/Delete/" + @Model.Id;
-}
+<h2>Are you sure you want to delete @Model.FName?</h2>
 
-<h2>Details:</h2>
 <div>
     <div>First Name: @Model.FName;</div>
     <div>Last Name: @Model.LName;</div>
@@ -17,8 +15,8 @@
     <div>Salary: @Model.Salary;</div>
 </div>
 
-<div>
-   
-        <a href=@urlDelete>Delete Teacher</a>
+<form method="POST" action="/Teacher/Remove/@Model.Id">
+    <input type="submit" value="Yes, delete."/>
+</form>
 
-</div>
+

@@ -89,5 +89,41 @@ namespace W2022_Assignment3_Ewerton.Controllers
             return View();
         }
 
+
+        /// <summary>
+        /// Deletes a teacher from DB using TeacherDataController
+        /// </summary>
+        /// <param name="teacherid"></param>
+        /// <returns>View.List if succeeded View.Show if failed </returns>
+        [HttpPost]
+        public ActionResult Remove(int id)
+        {
+
+            TeacherDataController controller = new TeacherDataController();
+
+            string result = controller.Remove(id);
+            if (result == "SUCCESS") { 
+                return RedirectToAction("List");
+            }
+             
+            return RedirectToAction("Show", id); //we could create something to warn the user here
+                
+            
+        }
+
+
+
+        //[HttpGet]
+        //[Route("Teacher/Delete/{id}")]
+        public ActionResult Delete(int id)
+        {
+            Teacher teacher = new TeacherDataController().Describe(id);
+            return View(teacher);
+                
+            
+        }
+
+
+
     }
 }

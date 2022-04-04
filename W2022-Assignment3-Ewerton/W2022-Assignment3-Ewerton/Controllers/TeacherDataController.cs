@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using W2022_Assignment3_Ewerton.Models;
 using MySql.Data.MySqlClient;
+using System.Diagnostics;
 // Upgrade proposal: Function QuerySchoolDB( string query)
 // I had created a class to query the school database and return result as a Array String(other project, same assignment).
 // I thought about working to transform the results into a JSON and then creating objects using them.
@@ -146,7 +147,7 @@ namespace W2022_Assignment3_Ewerton.Controllers
             MySqlCommand cmd = conn.CreateCommand();
 
             //write command 
-            Console.Write(teacher.HireDate);
+            Debug.WriteLine(teacher.HireDate);
             string hireDate = teacher.HireDate.ToString("MM/dd/yyyy");//transform datetime to string using parameter format (couldn't get to make datetime to mysql date work)
             cmd.CommandText = "INSERT INTO teachers(teacherfname,teacherlname, employeenumber, hiredate, salary) VALUES ( "+"@teacherFName"+"," + "@teacherLName" + ", " + "@employeeNumber" + ", STR_TO_DATE(@hiredate, '%m/%d/%Y'), " + "@salary" + "); ";
 
@@ -201,11 +202,17 @@ namespace W2022_Assignment3_Ewerton.Controllers
             //prepares query
             cmd.Prepare();
 
+            
+
             //reads DB
             MySqlDataReader teacherFound = cmd.ExecuteReader();
 
+
+
             if (teacherFound.Read())
             {
+                //close connection + return
+                conn.Close();
                 return Convert.ToInt32(teacherFound["teacherId"]);
             }
 
@@ -214,9 +221,54 @@ namespace W2022_Assignment3_Ewerton.Controllers
         
         }
 
-        
 
 
+        /// <summary>
+        /// Deletes a teacher from DB.
+        /// </summary>
+        /// <param name="teacherid"></param>
+        /// <returns>SUCCESS in case deletion happened. FAILED IN CASE DELETION WASN'T COMPLETEDE</returns>
+        [HttpPost]
+        public string Remove(int teacherid)
+        {
+            //teacherId
+            string returningMessage = "";
+            //create a connection with DB
+            MySqlConnection conn = new SchoolDbContext().AccessDatabase();
+
+            Debug.Write("Teacher id " + teacherid);
+            //open connection
+            conn.Open();
+
+            //create command
+            MySqlCommand cmd = conn.CreateCommand();
+
+            //add query
+            cmd.CommandText = "DELETE  FROM teachers WHERE teacherid = @teacherid;";
+
+            //add parameters to the query
+            cmd.Parameters.AddWithValue("@teacherid", teacherid);
+
+            //prepares query
+            cmd.Prepare();
+
+
+            //executes 
+            int result = cmd.ExecuteNonQuery();
+
+            //close connection
+            conn.Close();
+            if (result == 1)
+            {
+                returningMessage = "SUCCESS";
+
+            }
+            else { returningMessage = "FAILED"; }
+            
+
+
+            return returningMessage;
+        }
 
     }
 }
