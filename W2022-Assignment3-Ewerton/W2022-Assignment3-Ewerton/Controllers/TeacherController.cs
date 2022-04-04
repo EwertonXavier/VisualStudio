@@ -58,6 +58,16 @@ namespace W2022_Assignment3_Ewerton.Controllers
              return View();
         }
 
+
+        /// <summary>
+        /// Receives info needed to create a new teacher and calls TeacherDataController to insert on the database
+        /// </summary>
+        /// <param name="teacherFName"></param>
+        /// <param name="teacherLName"></param>
+        /// <param name="employeeId"></param>
+        /// <param name="hiredate"></param>
+        /// <param name="salary"></param>
+        /// <returns> View.New() </returns>
         [HttpPost]
         [Route("Teacher/New/")]
         public ActionResult New(string teacherFName,string teacherLName, string employeeId, DateTime hiredate,double salary)
@@ -69,8 +79,13 @@ namespace W2022_Assignment3_Ewerton.Controllers
             newTeacher.HireDate=hiredate;
             newTeacher.Salary = salary;
             TeacherDataController controller = new TeacherDataController();
-            string message = controller.New(newTeacher);
+            string message = controller.AddTeacher(newTeacher);
             ViewBag.Message = message;
+            if (message == "SUCCESS")
+            {
+                newTeacher.Id = controller.Find(employeeId);
+                ViewBag.teacherId = newTeacher.Id;
+            }
             return View();
         }
 

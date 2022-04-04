@@ -132,9 +132,9 @@ namespace W2022_Assignment3_Ewerton.Controllers
         /// HireDate:03/18/2022
         /// EmployeeNumber:'T9123'
         /// Salary:45.78</param>
-        /// <returns>message "Success" if successfull or "Failed" </returns>
+        /// <returns>message "Success" if successfull or "Failed" if it encountered an error </returns>
         [HttpPost]
-        public string New([FromBody] Teacher teacher) //[FroBody] prepares controller to receive properties from body request
+        public string AddTeacher([FromBody] Teacher teacher) //[FroBody] prepares controller to receive properties from body request. //I was using postman to test it
         {
             //create a connection with DB
             MySqlConnection conn = new SchoolDbContext().AccessDatabase();
@@ -159,16 +159,64 @@ namespace W2022_Assignment3_Ewerton.Controllers
             cmd.Prepare();
 
             //execute command
-            MySqlDataReader reader = cmd.ExecuteReader();
+            int reader = cmd.ExecuteNonQuery();
             conn.Close();//closes command
-            if (reader.RecordsAffected>0)//check how many rows were affected. The idea would be: check if there if the number of rows affected is greater than 0. To be careful we could use =1
+            if (reader>0)//check how many rows were affected. The idea would be: check if there if the number of rows affected is greater than 0. To be careful we could use =1
             {
-                return "Success";
-               // return Request.CreateResponse(HttpStatusCode.OK); //creates  200 http response. Aparently, this is not being used anymore
+                return "SUCCESS";
+               // return Request.CreateResponse(HttpStatusCode.OK); //creates  200 http response. Apparently, this is not being used anymore
             }
 
-            else return "Failed";//Request.CreateResponse(HttpStatusCode.InternalServerError); //creates 500 http response. Because all key from DB can be null these is never executed
+            else return "FAILED";//Request.CreateResponse(HttpStatusCode.InternalServerError); //creates 500 http response.// Because all key from DB can be null these is never going to be executed
         }
+
+
+        /// <summary>
+        /// Function to find a teacher based on the employeeId
+        /// </summary>
+        /// <param name="employeeNumber"></param>
+        /// <returns>teacherid if employeeNumber exist in DB.
+        /// -1 otherwise</returns>
+        [HttpGet]
+        [Route("api/TeacherData/Find/{employeeNumber}")]
+        public int Find(string employeeNumber)
+        {
+            //teacherId
+            int teacherId = -1;
+            //create a connection with DB
+            MySqlConnection conn = new SchoolDbContext().AccessDatabase();
+
+            //open connection
+            conn.Open();
+
+            //create command
+            MySqlCommand cmd = conn.CreateCommand();
+
+            //add query
+            cmd.CommandText = "SELECT teacherid FROM teachers t WHERE employeenumber = @employeeNumber";
+
+            //add parameters to the query
+            cmd.Parameters.AddWithValue("@employeeNumber", employeeNumber);
+
+            //prepares query
+            cmd.Prepare();
+
+            //reads DB
+            MySqlDataReader teacherFound = cmd.ExecuteReader();
+
+            if (teacherFound.Read())
+            {
+                return Convert.ToInt32(teacherFound["teacherId"]);
+            }
+
+
+            else return teacherId;
+        
+        }
+
+        
+
+
 
     }
 }

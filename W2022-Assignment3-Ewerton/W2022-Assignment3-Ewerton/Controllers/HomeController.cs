@@ -12,7 +12,7 @@ namespace W2022_Assignment3_Ewerton.Controllers
         {
             ViewBag.Title = "Home Page";
 
-            return View();
+            return RedirectToAction("","Teacher"); //just a small trick to get to teacher without changing configurations :D
         }
     }
 }

@@ -7,10 +7,16 @@
 
 <h2>Register New Teacher</h2>
 
-@{ 
-    if(ViewBag.message != null)
+@{
+
+    if (ViewBag.message == "SUCCESS")
+    {
+        string url = "/Teacher/Show/" + ViewBag.teacherId;
+        <p>@ViewBag.message ! You can see created teacher <a href=@url>here</a>.</p>
+            }
+            else if(ViewBag.message == "FAILED")
             {
-                <p>@ViewBag.message</p>
+        <p>@ViewBag.message. Could not create new teacher.</p>
             }
 }
 
@@ -30,9 +36,11 @@
 
     <div>
         <label for="hiredate">Hire Date</label>
-    <input type="date" id="hiredate" name="hiredate" required /></div>
+        <input type="date" id="hiredate" name="hiredate" required />
+    </div>
     <div>
         <label for="salary">Salary</label>
-    <input type="number" step=".01" id="salary" name="salary" required /></div>
+        <input type="number" step=".01" id="salary" name="salary" required />
+    </div>
     <div><input type="submit" /></div>
 </form>
