@@ -212,7 +212,6 @@ namespace W2022_Assignment3_Ewerton.Controllers
             if (teacherFound.Read())
             {
                 //close connection + return
-                conn.Close();
                 return Convert.ToInt32(teacherFound["teacherId"]);
             }
 

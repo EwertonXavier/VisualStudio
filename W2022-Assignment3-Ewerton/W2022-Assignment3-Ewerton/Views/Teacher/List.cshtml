@@ -9,11 +9,21 @@
 <h3>There are @Model.Count() teachers: </h3>
 
 @{
+    <div>
+        <form action="/Teacher/Add" method="GET">
+            <button type="Submit"> Create new Teacher</button>
+        </form>
+    </div>
+
     foreach (W2022_Assignment3_Ewerton.Models.Teacher teacher in @Model)
     {
         string url = "/Teacher/Show/";
         <div>
             <a href="@url@teacher.Id">@teacher.FName  @teacher.LName</a>
         </div>
+
+
     }
+
+
 }

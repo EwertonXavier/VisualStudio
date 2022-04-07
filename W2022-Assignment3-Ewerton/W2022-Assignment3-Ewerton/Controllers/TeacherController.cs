@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Net.Http;
 using W2022_Assignment3_Ewerton.Models;
+using System.Diagnostics;
 namespace W2022_Assignment3_Ewerton.Controllers
 {
     public class TeacherController : Controller
@@ -52,12 +53,13 @@ namespace W2022_Assignment3_Ewerton.Controllers
         /// </summary>
         /// <returns>View.New.cshtml</returns>
         [HttpGet]
-        [Route("Teacher/New/")]
-        public ActionResult New()
+        [Route("Teacher/Add/")]
+        public ActionResult Add()
         {
              return View();
         }
 
+        //tried using same route with different http verbs
 
         /// <summary>
         /// Receives info needed to create a new teacher and calls TeacherDataController to insert on the database
@@ -69,8 +71,8 @@ namespace W2022_Assignment3_Ewerton.Controllers
         /// <param name="salary"></param>
         /// <returns> View.New() </returns>
         [HttpPost]
-        [Route("Teacher/New/")]
-        public ActionResult New(string teacherFName,string teacherLName, string employeeId, DateTime hiredate,double salary)
+        [Route("Teacher/Add/")]
+        public ActionResult Add(string teacherFName,string teacherLName, string employeeId, DateTime hiredate,double salary)
         {
             Teacher newTeacher = new Teacher();
             newTeacher.FName = teacherFName;
@@ -81,11 +83,14 @@ namespace W2022_Assignment3_Ewerton.Controllers
             TeacherDataController controller = new TeacherDataController();
             string message = controller.AddTeacher(newTeacher);
             ViewBag.Message = message;
+            
             if (message == "SUCCESS")
             {
+                Debug.WriteLine(employeeId);
                 newTeacher.Id = controller.Find(employeeId);
                 ViewBag.teacherId = newTeacher.Id;
             }
+            Debug.WriteLine("New What is returned");
             return View();
         }
 
@@ -112,11 +117,16 @@ namespace W2022_Assignment3_Ewerton.Controllers
         }
 
 
-
+        /// <summary>
+        /// Route to deliver page used to confirm deletion of a teacher from SchoolDB 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>View.Delete</returns>
         //[HttpGet]
         //[Route("Teacher/Delete/{id}")]
         public ActionResult Delete(int id)
         {
+            //creates an instance of teacher and describe it based on the id received as parameter
             Teacher teacher = new TeacherDataController().Describe(id);
             return View(teacher);
                 
