@@ -24,7 +24,7 @@ namespace W2022_Assignment3_Ewerton.Controllers
         public ActionResult List()
         {
             //instantiate a controller and calls list API method
-            List<Teacher> teachers= new TeacherDataController().List();
+            List<Teacher> teachers = new TeacherDataController().List();
 
             return View(teachers);
         }
@@ -46,8 +46,8 @@ namespace W2022_Assignment3_Ewerton.Controllers
             Teacher teacherDetails = controller.Describe(id);
             //sends teacherDetails to the Show View
             return View(teacherDetails);
-        }   
-        
+        }
+
         /// <summary>
         /// Contains form to create a new teacher.
         /// </summary>
@@ -56,7 +56,7 @@ namespace W2022_Assignment3_Ewerton.Controllers
         [Route("Teacher/Add/")]
         public ActionResult Add()
         {
-             return View();
+            return View();
         }
 
         //tried using same route with different http verbs
@@ -72,18 +72,18 @@ namespace W2022_Assignment3_Ewerton.Controllers
         /// <returns> View.New() </returns>
         [HttpPost]
         [Route("Teacher/Add/")]
-        public ActionResult Add(string teacherFName,string teacherLName, string employeeId, DateTime hiredate,double salary)
+        public ActionResult Add(string teacherFName, string teacherLName, string employeeId, DateTime hiredate, double salary)
         {
             Teacher newTeacher = new Teacher();
             newTeacher.FName = teacherFName;
             newTeacher.LName = teacherLName;
             newTeacher.EmployeeNumber = employeeId;
-            newTeacher.HireDate=hiredate;
+            newTeacher.HireDate = hiredate;
             newTeacher.Salary = salary;
             TeacherDataController controller = new TeacherDataController();
             string message = controller.AddTeacher(newTeacher);
             ViewBag.Message = message;
-            
+
             if (message == "SUCCESS")
             {
                 Debug.WriteLine(employeeId);
@@ -103,18 +103,22 @@ namespace W2022_Assignment3_Ewerton.Controllers
         [HttpPost]
         public ActionResult Remove(int id)
         {
-
+            //creating controller
             TeacherDataController controller = new TeacherDataController();
 
             string result = controller.Remove(id);
-            if (result == "SUCCESS") { 
+            if (result == "SUCCESS")
+            {
                 return RedirectToAction("List");
             }
-             
+
             return RedirectToAction("Show", id); //we could create something to warn the user here
-                
-            
+
+
         }
+
+
+
 
 
         /// <summary>
@@ -129,11 +133,57 @@ namespace W2022_Assignment3_Ewerton.Controllers
             //creates an instance of teacher and describe it based on the id received as parameter
             Teacher teacher = new TeacherDataController().Describe(id);
             return View(teacher);
-                
-            
+
+
         }
 
+        /// <summary>
+        /// Route to update teacher from SchoolDB
+        /// </summary>
+        /// <returns>View.Show</returns>
+        [HttpPost]
+        [Route("Teacher/Update/id")]
+        public ActionResult Update(int id, string teacherFname, string teacherLname, double salary)
+        {
+            //creates an instance of teacher and describe it based on the id received as parameter
+            TeacherDataController controller = new TeacherDataController();
 
+            //Creates instance of teacher and gets teacher from SchoolDB
+            Teacher teacher = controller.Describe(id);
+
+
+            //Updates Teacher Values with new Values
+            teacher.FName = teacherFname;
+            teacher.LName = teacherLname;
+            teacher.Salary = salary;
+
+            //Updates Database
+            string status = controller.UpdateTeacher(teacher);
+
+            //deals with return
+            if (status == "SUCCESS")
+            {
+                return Redirect("/Teacher/Show/" + id);
+            }
+            else
+
+                return RedirectToAction("Update", id);
+
+
+        }
+
+        /// <summary>
+        /// Route to deliver Update page. Receives ID od the teacher to be edited.
+        /// </summary>
+        /// <returns>View.Update for a particular teacher</returns>
+        [HttpGet]
+        [Route("Teacher/Update/id")]
+        public ActionResult Update(int id)
+        {
+            TeacherDataController controller = new TeacherDataController();
+            Teacher teacher = controller.Describe(id);
+            return View(teacher);
+        }
 
     }
 }

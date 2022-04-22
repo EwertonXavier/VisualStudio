@@ -5,6 +5,7 @@
 
 @{ 
     string urlDelete = "/Teacher/Delete/" + @Model.Id;
+    string urlUpdate = "/Teacher/Update/" + @Model.Id;
 }
 
 <h2>Details:</h2>
@@ -20,6 +21,11 @@
 <div>
    
         <a href=@urlDelete>Delete Teacher</a>
+
+</div>
+<div>
+   
+        <a href=@urlUpdate>Update Teacher</a>
 
 </div>
 

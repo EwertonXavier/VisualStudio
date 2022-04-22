@@ -34,7 +34,7 @@ namespace W2022_Assignment3_Ewerton.Controllers
 
             //creating connection to schoolDB 
             MySqlConnection conn = dbCtx.AccessDatabase();
-
+            
             //opening connection
             conn.Open();
 
@@ -71,6 +71,7 @@ namespace W2022_Assignment3_Ewerton.Controllers
             conn.Close(); // close connection with DB
             return teacher;
         }
+
 
         /// <summary>
         /// Fetch all teachers info from teachers table
@@ -269,5 +270,54 @@ namespace W2022_Assignment3_Ewerton.Controllers
             return returningMessage;
         }
 
+        /// <summary>
+        /// Functions to update teacher o School database
+        /// </summary>
+        /// <param name="teacher"></param>
+        /// <returns>Success if teacher was updated or </returns>
+        public string UpdateTeacher(Teacher teacher)
+        {
+
+            //creating db context
+            SchoolDbContext dbCtx = new SchoolDbContext();
+
+            //creating connection to schoolDB 
+            MySqlConnection conn = dbCtx.AccessDatabase();
+
+            //opening connection
+            conn.Open();
+
+            //creating command
+            MySqlCommand cmd = conn.CreateCommand();
+
+            //writing command query which select all information from teacher table using parameter teacher to filter rows
+            cmd.CommandText = "UPDATE teachers SET teacherfname=@teacherfname, teacherlname=@teacherlname, salary=@salary  WHERE teacherid = @teacherid";
+
+            //create parameter and prepares command
+            cmd.Parameters.AddWithValue("@teacherfname", teacher.FName);
+            cmd.Parameters.AddWithValue("@teacherlname", teacher.LName);
+            cmd.Parameters.AddWithValue("@salary", teacher.Salary);
+            cmd.Parameters.AddWithValue("@teacherid", teacher.Id);
+            cmd.Prepare();
+
+            //executes 
+            int result = cmd.ExecuteNonQuery();
+
+            //close connection
+            conn.Close();
+
+            //return
+            if (result == 1)
+            {
+                return "SUCCESS";
+
+            }
+            else return "FAILED";
+        }
+
+
+
     }
 }
+
+

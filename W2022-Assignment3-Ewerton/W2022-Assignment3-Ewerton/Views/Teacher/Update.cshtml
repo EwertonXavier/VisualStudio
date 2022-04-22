@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "Update";
+    string actionUrl = "/Teacher/Update/" + @Model.Id;
+}
+
+<div>
+    <h2>Current Information:</h2>
+    <div>First Name: @Model.FName;</div>
+    <div>Last Name: @Model.LName;</div>
+    <div>Teacher Id: @Model.Id;</div>
+    <div>Employee Number: @Model.EmployeeNumber;</div>
+    <div>Hire Date: @Model.HireDate;</div>
+    <div>Salary: @Model.Salary;</div>
+</div>
+
+<div>
+
+    <form action=@actionUrl method="POST">
+        <fieldset>
+            <legend>Update Name or Salary of this Teacher</legend><div>
+                <!--Teacher Field-->
+                <label for="teacherFName">Teacher First Name</label>
+                <input type="text" id="teacherFName" name="teacherFName" value="@Model.FName" required />
+                <label for="teacherLName">Teacher Last Name</label>
+                <input type="text" id="teacherLName" name="teacherLName" value="@Model.LName" required />
+
+                <div>
+                    <!--Salary Field-->
+                    <label for="salary">Salary</label>
+                    <input type="number" step=".01" id="salary" name="salary" value="@Model.Salary" required />
+                </div>
+            </div>
+            <!--Submit Buton-->
+            <div><input type="submit" /></div>
+
+        </fieldset>
+    </form>
+
+
+</div>
